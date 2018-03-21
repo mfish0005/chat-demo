@@ -36,7 +36,7 @@ Your solution should do the following:
 1. When the user types <kbd>@</kbd> in the chat control, pop up a type-ahead pop-up menu showing 7 users they could mention
 2. The pop-up should show thumbnail, chat handle, first name, last name
 3. As the user types the list is sorted and filtered down to those that have matching names/emails/chat handles
-4. If the user presses <kbd>enter</kbd> the highlighted user is entered into the chat text input as <kbd>@chatHandle</kbd>
+4. If the user presses <kbd>up</kbd> and <kbd>down</kbd> it alters which user is highlighted. When <kbd>enter</kbd> is pressed the highlighted user is entered into the chat text input as <kbd>@chatHandle</kbd>
 5. You can decide how you want to store messages with chat handles in Firestore
 6. The chat messages in the chat stream should show mentions with a light blue highlight background.
 
