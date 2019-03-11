@@ -14,14 +14,14 @@ The goal of this exercise is to add a feature to the chatroom. This will need a 
 
 This exercise is designed to take 1 - 2 days.
 
-
 ## The exercise
 
-The goal is to add <kbd>@mentions</kbd> to our chat. This should look, feel and work just like Slack's version of the feature. They've done a great job of implementing theirs and more or less found the optimal design. 
+The goal is to add <kbd>@mentions</kbd> to our chat. This should look, feel and work just like Slack's version of the feature. They've done a great job of implementing theirs and more or less found the optimal design.
 
 ### Working with us
 
 We like to work in a collaborative, communicative manner. We'll invite you to our Slack #tech room. We expect you to:
+
 - Ask us questions to clarify things you're uncertain about
 - If you get stuck on something, ask us for help
 - Collaborate with us if there's a skill you lack
@@ -29,10 +29,10 @@ We like to work in a collaborative, communicative manner. We'll invite you to ou
 - Preview your work (UX / code / demos) early and often so we can provide helpful guidance and know how it's going
 - Give a little video-demo to the tech team at the end showing the feature in action and your code
 
-
 ### Specification
 
 Your solution should do the following:
+
 1. When the user types <kbd>@</kbd> in the chat control, pop up a type-ahead pop-up menu showing 7 users they could mention
 2. The pop-up should show thumbnail, chat handle, first name, last name
 3. As the user types the list is sorted and filtered down to those that have matching names/emails/chat handles
@@ -40,32 +40,25 @@ Your solution should do the following:
 5. You can decide how you want to store messages with chat handles in Firestore
 6. The chat messages in the chat stream should show mentions with a light blue highlight background.
 
-
-### Technical steps 
+### Technical steps
 
 1. Get the project running by cloning this repository, installing Angular CLI, then running `npm install` and `ng serve`
 2. Take `src/assets/users.json` (our mock user data) and write a function generate a unique chat handle for each user. Your function should try auto-generated handles for each user until it finds one not currently in use. FirstnameLastname or their email username are good initial candidates.
-3. Create an <a href="https://algolia.com">Algolia</a> account and upload the user data there, with the chat handles
+3. Create an <a href="https://algolia.com">Algolia</a> account and upload the user data there, with the chat handles. Note that chat handles do not need to be unique (turns out this is more useful in a real-world application).
 4. Get type-ahead working in the app, using Algolia as the search engine
 5. Build the key handlers to implement the enter auto-complete, arrow up/down selection, and handle user backspace presses as well (e.g. if they delete the @, stop showing the menu)
 6. Decide how to post the messages to FireStore
 7. Show messages with mentions in them with the mention highlighted
 
-
 ### Bonus points
 
 Here are a few other nice to haves:
+
 - Email the mentioned user to let them know who said what to them. You should direct all these emails to your own address.
 - Give each user their own chat bubble colour
 - Add an emoji palette
 - If a user sends just one emoji, show it big with no background
 - Make the text input grow multiline if required
-
-
-
-
-
-
 
 ## Using the `ng` command line tool with this project
 
