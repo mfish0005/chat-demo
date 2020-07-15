@@ -1,86 +1,97 @@
-import { Component, OnInit, AfterViewChecked, Inject, ViewChild, ElementRef } from '@angular/core';
-import { TitleCasePipe } from '@angular/common';
+import { Component, AfterViewInit, ViewChild, ElementRef } from "@angular/core";
 
-import { AngularFirestore, AngularFirestoreCollection } from 'angularfire2/firestore';
-import { Observable } from 'rxjs/Observable';
-import 'rxjs/add/operator/first';
-
-import { Subscription } from 'rxjs/Subscription';
-import * as firebase from 'firebase';
-
-import { IChat } from '../../model/chat';
-import { DataService } from '../data.service';
+import { IChat } from "../../model/chat";
+import { DataService } from "../data.service";
+import { DB } from "../db.service";
 
 // class Chat implements IChat {}
 
 @Component({
-  selector: 'app-chat',
-  templateUrl: './chat.component.html',
-  styleUrls: ['./chat.component.css']
+  selector: "app-chat",
+  templateUrl: "./chat.component.html",
+  styleUrls: ["./chat.component.css"],
 })
-export class ChatComponent implements OnInit, AfterViewChecked
-{
-  chatCollection: AngularFirestoreCollection<IChat>;
-  chat$: Observable<IChat[]>;
-  model: IChat;
+export class ChatComponent implements AfterViewInit {
+  public model: IChat;
+  public chats;
+  public user;
 
-  user$: Observable<Object>;
-  userObject: Object;
+  private fbChatSub;
 
-  @ViewChild('chatStream') private container: ElementRef;
+  @ViewChild("chatStream") public container: ElementRef;
 
-  resetModel(){
-  	this.model = {} as IChat;
+  resetModel() {
+    this.model = {} as IChat;
   }
 
-  constructor(
-      db: AngularFirestore, 
-      data: DataService) 
-  {
-    this.chatCollection = db.collection<IChat>('chat', ref => ref.orderBy("dateCreated"))
-    this.chat$ = this.chatCollection.valueChanges();
-    this.user$ = data.getUser();
-
-    this.chat$.subscribe(() => {this.scrollToBottom()})
+  constructor(private dataSvc: DataService, private firebase: DB) {
+    this.dataSvc.getUser().subscribe((res: any) => {
+      this.user = res.results[0];
+    });
 
     this.resetModel();
   }
 
+  /**
+   * Scroll the chat control to the bottom per stand UX expectations
+   */
   scrollToBottom(): void {
-      try {
-        this.container.nativeElement.scrollTop = this.container.nativeElement.scrollHeight;
-      } catch(err) { 
-        console.error(err);
-        console.log(this.container);
-      }                 
+    if (this.container) {
+      this.container.nativeElement.scrollTop = this.container.nativeElement.scrollHeight;
     }
-
-  ngOnInit() {
-    this.user$.first().subscribe( (u) => this.userObject = u );
-    this.scrollToBottom();
   }
 
-  ngAfterViewChecked() {        
-    this.scrollToBottom();        
-  } 
+  /**
+   * Load chats, etc.
+   */
+  ngAfterViewInit() {
+    this.fbChatSub = this.firebase.firestore
+      .collection("chat")
+      .orderBy("dateCreatedUnix")
+      .limit(20)
+      .onSnapshot(
+        (snap) => {
+          this.chats = [];
+          snap.forEach((doc) => {
+            this.chats.push(doc.data());
+          });
+          // timeout to give chats time to load
+          setTimeout(() => {
+            this.scrollToBottom();
+          }, 300);
+        },
+        (error) => {
+          console.log("Error loading chats", error);
+        }
+      );
+  }
 
+  /**
+   * Handle user submitting chat
+   */
   onSubmit() {
-
     if (this.model.text != "" && this.model.text != undefined) {
-    	this.model.dateCreated = firebase.firestore.FieldValue.serverTimestamp()
-      this.model.from = this.userObject;
-      this.chatCollection.add(this.model);
+      this.model.dateCreatedUnix = Date.now();
+      this.model.from = this.user;
+      this.firebase.firestore.collection("chat").add(this.model);
       this.resetModel();
       this.scrollToBottom();
     }
-   
   }
 
-  public tracker(index, item):any {
+  /**
+   * track by for chats
+   * @param index
+   * @param item
+   */
+  public tracker(index, item): any {
     return item.$id;
   }
 
-  
-
-
+  /**
+   * Clean up
+   */
+  ngOnDestroy() {
+    this.fbChatSub();
+  }
 }
