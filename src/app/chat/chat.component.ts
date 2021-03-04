@@ -1,18 +1,9 @@
+import { UserService } from './../user.service';
 import { Component, AfterViewInit, ViewChild, ElementRef } from "@angular/core";
 
 import { IChat } from "../../model/chat";
-import { DataService } from "../data.service";
 import { DB } from "../db.service";
-import * as algoliasearch from 'algoliasearch/lite';
-import { IFrom } from '../../model/from';
 import { User } from '../../model/user.model';
-
-const searchClient = algoliasearch(
-    'CR233H27JT',
-    '49993399bd441fd744221fb04df275a7'
-)
-
-const index = searchClient.initIndex('dev_USERS');
 
 @Component({
   selector: "app-chat",
@@ -22,68 +13,44 @@ const index = searchClient.initIndex('dev_USERS');
 export class ChatComponent implements AfterViewInit {
   public model: IChat;
   public chats;
-  public user;
+  public author;
   public names: string[] = [];
-  public selectedUser: User = {firstName: '', lastName: '', email: '', thumbnailUrl: '', username: ''};
+  public users: User[];
+  public selectedUser: User = { firstName: '', lastName: '', email: '', thumbnailUrl: '', username: '' };
   private fbChatSub;
+  private message: string;
 
   @ViewChild("chatStream") public container: ElementRef;
 
   resetModel() {
     this.model = {} as IChat;
+    this.selectedUser = {} as User;
+    this.message = '';
   }
 
-  constructor(private dataSvc: DataService, private firebase: DB) {
-    this.dataSvc.getUser().subscribe((res: any) => {
-      this.user = res.results[0];
+  constructor(private userService: UserService, private firebase: DB) {
+    this.userService.getRandomUser().subscribe((res: any) => {
+      this.author = res.results[0];
     });
 
     this.resetModel();
   }
 
-  getUserFromAlgolia(event): void {
-    console.log(event)
-
-    // Only proceed if an @ symbol was typed
+  searchUsers(event): void {
     if (!event.query.includes('@')) {
       return;
+    } else if (this.selectedUser.username === event.query) {
+      this.message = event.query;
     }
 
-    let names: string[] = [];
-
-    index.search(
-      {
-        query: event.query,
-      }
-    ).then(({ hits }) => {
-      console.log(hits);
-      hits.forEach(hit => {
-        names.push('@' + hit.login.username);
-      })
-    }).then(() => {
-      this.names = names;
-    }
-    );
-  }
-
-  onUserSelected(event) {
-    index.search(
-      {
-        query: event.split('@')[1]
-      }
-    ).then(({ hits } ) => {
-      this.selectedUser = {
-        firstName: hits[0].name.first,
-        lastName: hits[0].name.last,
-        email: hits[0].email,
-        username: hits[0].login.username,
-        thumbnailUrl: hits[0].picture.thumbnail
-      }
+    this.userService.queryUsers(event.query).then(users => {
+      this.users = users;
     });
   }
 
-  sendMessage(): void {
-    console.log(this.model);
+  onUserSelected(event) {
+    this.selectedUser = event;
+    this.selectedUser.username = '@' + this.selectedUser.username;
   }
 
   /**
@@ -102,7 +69,6 @@ export class ChatComponent implements AfterViewInit {
     this.firebase.firestore
       .collection("chat")
       .orderBy("dateCreatedUnix")
-      //.limit(20)
       .onSnapshot(
         (snap) => {
           this.chats = [];
@@ -124,9 +90,10 @@ export class ChatComponent implements AfterViewInit {
    * Handle user submitting chat
    */
   onSubmit() {
-    if (this.model.text != "" && this.model.text != undefined) {
+    if (this.message != undefined && this.message != '') {
       this.model.dateCreatedUnix = Date.now();
-      this.model.from = this.user;
+      this.model.from = this.author;
+      this.model.text = this.message;
       this.firebase.firestore.collection("chat").add(this.model);
       this.resetModel();
       this.scrollToBottom();

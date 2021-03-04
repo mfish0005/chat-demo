@@ -6,7 +6,6 @@ import { HttpClientModule } from "@angular/common/http";
 import { AppComponent } from "./app.component";
 import { environment } from "../environments/environment";
 import { ChatComponent } from "./chat/chat.component";
-import { DataService } from "./data.service";
 import { DB } from "./db.service";
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {AutoCompleteModule} from 'primeng/autocomplete';
@@ -14,7 +13,7 @@ import { NgAisModule } from 'angular-instantsearch';
 
 @NgModule({
   imports: [BrowserModule, HttpClientModule, FormsModule, BrowserAnimationsModule, AutoCompleteModule, NgAisModule.forRoot()],
-  providers: [DataService, DB],
+  providers: [DB],
   declarations: [AppComponent, ChatComponent],
   bootstrap: [AppComponent],
 })

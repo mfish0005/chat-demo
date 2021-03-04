@@ -40,3 +40,32 @@ p-autoComplete {
 .p-inputtext:enabled:focus {
     box-shadow: none;
 }
+
+.auto-panel {
+    color: red;
+    width: 300px;
+}
+
+.username {
+    font-weight: normal;
+    font-style: normal;
+    font-size: 12px;
+}
+
+.full-name {
+    font-weight: bold;
+    text-transform: capitalize;
+    font-size: 14px;
+}
+
+.user-thumbnail {
+    width:32px;
+    display:inline-block;
+    margin:5px 10px 2px 5px;
+    border-radius: 50%;
+}
+
+.autocomplete-user {
+    float:right;
+    margin:10px 10px 0 0
+}

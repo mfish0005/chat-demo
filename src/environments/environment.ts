@@ -6,9 +6,6 @@
 export const environment = {
   production: false,
   firebase: {
-    // apiKey: "AIzaSyBh1oGOfAgkF0RQHJ20v3m_Sy5D7xLHDeM",
-    // authDomain: "sd-chat-demo.firebaseapp.com",
-    // projectId: "sd-chat-demo",
   	apiKey: "AIzaSyCT5kZYZ5BFXcUxIfY5Oqkog7N63lWeL1o",
     authDomain: "sketchdeck-demo-chat.firebaseapp.com",
     databaseURL: "https://sketchdeck-demo-chat.firebaseio.com",
