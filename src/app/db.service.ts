@@ -13,10 +13,10 @@ export class DB {
     const config = {
       apiKey: environment.firebase.apiKey,
       authDomain: environment.firebase.authDomain,
-      databaseURL: environment.firebase.databaseURL,
+    //   databaseURL: environment.firebase.databaseURL,
       projectId: environment.firebase.projectId,
-      storageBucket: environment.firebase.storageBucket,
-      messagingSenderId: environment.firebase.messagingSenderId,
+    //   storageBucket: environment.firebase.storageBucket,
+    //   messagingSenderId: environment.firebase.messagingSenderId,
     };
     firebase.initializeApp(config);
 

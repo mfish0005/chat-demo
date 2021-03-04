@@ -24,13 +24,35 @@
 					<div class="input-group-prepend">
 						<img [src]="user?.picture?.thumbnail" class="author-thumbnail"/>
 					</div>
-				<input id="message" name="message" type="text" [(ngModel)]="model.text" class="form-control"/>
+				<!-- <input id="message" name="message" type="text" [(ngModel)]="model.text" class="form-control"/> -->
+                <p-autoComplete name="message" inputStyleClass="auto-input" scrollHeight="80px" panelStyleClass="auto-panel" [(ngModel)]="model.text" [suggestions]="names" (onSelect)="onUserSelected($event)" (completeMethod)="getUserFromAlgolia($event)"></p-autoComplete>
 				<div class="input-group-append">
-					<button type="submit" class="btn btn-primary btn-success">Send</button>
+					<button type="submit" class="btn btn-primary btn-success" (click)="sendMessage()">Send</button>
 				</div>
 			</div>
 		</div>
 	</div>
-
-	
 </form>
+
+<!-- .form-control {
+    width: 100%;
+        padding: .375rem .75rem;
+        font-size: 1rem;
+        line-height: 1.5;
+        color: #495057;
+        background-color: #fff;
+        background-clip: padding-box;
+        border: 1px solid #ced4da;
+        border-radius: .25rem;
+        transition: border-color .15s ease-in-out,box-shadow .15s ease-in-out;
+    }
+}
+
+.input-group>.custom-file, .input-group>.custom-select, .input-group>.form-control {
+    position: relative;
+    -webkit-box-flex: 1;
+    -ms-flex: 1 1 auto;
+    flex: 1 1 auto;
+    width: 1%;
+    margin-bottom: 0;
+} -->

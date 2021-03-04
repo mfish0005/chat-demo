@@ -8,9 +8,12 @@ import { environment } from "../environments/environment";
 import { ChatComponent } from "./chat/chat.component";
 import { DataService } from "./data.service";
 import { DB } from "./db.service";
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import {AutoCompleteModule} from 'primeng/autocomplete';
+import { NgAisModule } from 'angular-instantsearch';
 
 @NgModule({
-  imports: [BrowserModule, HttpClientModule, FormsModule],
+  imports: [BrowserModule, HttpClientModule, FormsModule, BrowserAnimationsModule, AutoCompleteModule, NgAisModule.forRoot()],
   providers: [DataService, DB],
   declarations: [AppComponent, ChatComponent],
   bootstrap: [AppComponent],

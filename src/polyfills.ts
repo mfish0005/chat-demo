@@ -32,3 +32,9 @@ import 'zone.js/dist/zone';  // Included with Angular CLI.
 /***************************************************************************************************
  * APPLICATION IMPORTS
  */
+// Algolia polyfill for Angular CLI 6+
+// "One dependency of Angular InstantSearch requires the process.env global variable to be available"
+// https://www.algolia.com/doc/guides/building-search-ui/installation/angular/#install-the-npm-package
+(window as any).process = {
+    env: { DEBUG: undefined },
+  };

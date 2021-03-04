@@ -39,6 +39,7 @@
 	padding: 1.5em 1.5em;
 	border-top: 1px solid #aaa;
 	background: #eee;
+    min-height: 150px;
 }
 
 .chat-control .form-group {
